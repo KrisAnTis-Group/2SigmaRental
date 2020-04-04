@@ -4,10 +4,10 @@ from src import dataModifier as DM
 
 dataJS = DM.json_load("data/train.json/train.json")
 
-ModelTypesX = ["bathrooms", "bedrooms", "latitude", "longitude", "price"]
+ModelTypesX = ["bathrooms", "bedrooms", "latitude", "longitude", "price", "created"]
 ModelTypesY = ["interest_level"]
 
-interestLevel = {
+tupeConvert = {
     'interest_level':{
         'low': 0,
         'medium': 1,
@@ -17,12 +17,24 @@ interestLevel = {
 
 
 
+
+
 X = DM.get_categories(dataJS,ModelTypesX)
-Y = DM.get_categories(DM.modifier_fiches_type(dataJS,interestLevel),ModelTypesY)
-    
 X = np.array(X)
+Y = DM.get_categories(DM.modifier_fiches_type(dataJS,tupeConvert),ModelTypesY)
+Y = np.array(Y) 
+
+
+FullData = X[:,-1:]
+X = X[:,:-1]
+
+Data = DM.data_to_days(DM.fullData_to_data(FullData))
+X = np.column_stack((X, Data))
+
+Time = DM.time_to_sec(DM.fullData_to_time(FullData))
+X = np.column_stack((X, Time))
+
 X = np.asarray(X).astype('float32')
-Y = np.array(Y)    
 Y = np.asarray(Y).astype('int') 
 
 np.random.seed(2)
@@ -51,14 +63,15 @@ from keras import layers
 
 model = models.Sequential()
 model.add(layers.Dense(32,activation='relu',input_shape=(X.shape[1],)))
-model.add(layers.Dense(16,activation='relu'))
+model.add(layers.Dense(32,activation='relu'))
 #model.add(layers.Dense(32,activation='relu'))
 #model.add(layers.Dense(16,activation='relu'))
 model.add(layers.Dense(3,activation='softmax'))
 
 model.compile(optimizer='rmsprop',loss='categorical_crossentropy',metrics=['accuracy'])
 
-history = model.fit(X, Y, epochs=20, batch_size=64, validation_split=0.4)
+history = model.fit(X, Y, epochs=35, batch_size=128, validation_split=0.4)
+
 #model.save_weights('Dense_model.h5')
 
 #графики изменения качества модели
