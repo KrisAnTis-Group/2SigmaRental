@@ -60,12 +60,27 @@ def data_to_days (DataStr):
 
         D = int(full2[3])
         D += int(full2[2])*30
-        Y = (int(full2[0])*100+int(full2[1]))
-        D += Y*365
+        D += (int(full2[0]+full2[1]))*365
 
         Days.append(D)
 
     return np.array(Days)
+
+
+def data_to_MD (DataStr):
+
+    MD = []
+
+    for d in DataStr:
+        full2 = re.findall('\d{2}',d)
+        D = []
+        #D.append(int(full2[0]+full2[1]))
+        D.append(int(full2[2]))
+        D.append(int(full2[3]))
+
+        MD.append(D)
+
+    return np.array(MD)
 
 def time_to_sec (TimeStr):
     Time = []
@@ -79,3 +94,17 @@ def time_to_sec (TimeStr):
         Time.append(T)
 
     return np.array(Time)
+
+def time_to_HMS (TimeStr):
+
+    HMS = []
+    for d in TimeStr:
+        full2 = re.findall('\d{2}',d)
+        T = []
+        T.append(full2[0])
+        T.append(full2[1])
+        T.append(full2[2])
+
+        HMS.append(T)
+
+    return np.array(HMS)

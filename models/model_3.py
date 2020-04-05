@@ -15,26 +15,30 @@ tupeConvert = {
     }
 }
 
-
-
-
-
 X = DM.get_categories(dataJS,ModelTypesX)
 X = np.array(X)
 Y = DM.get_categories(DM.modifier_fiches_type(dataJS,tupeConvert),ModelTypesY)
 Y = np.array(Y) 
 
-
 FullData = X[:,-1:]
 X = X[:,:-1]
 
-Data = DM.data_to_days(DM.fullData_to_data(FullData))
-Time = DM.time_to_sec(DM.fullData_to_time(FullData))
-
+Data = DM.data_to_MD(DM.fullData_to_data(FullData))
+Time = DM.time_to_HMS(DM.fullData_to_time(FullData))
 X = np.column_stack((X, Data, Time))
+
+
 
 X = np.asarray(X).astype('float32')
 Y = np.asarray(Y).astype('int') 
+
+#нормализация
+mean = X.mean(axis=0)
+X -= mean
+std = X.std(axis=0)
+X /= std
+
+
 
 np.random.seed(2)
 
@@ -43,11 +47,10 @@ np.random.shuffle(indices)
 X = X[indices]
 Y = Y[indices]
 
-#нормализация
-mean = X.mean(axis=0)
-X -= mean
-std = X.std(axis=0)
-X /= std
+
+
+
+
 
 def to_one_hot(labels, demension=3):
     results = np.zeros((len(labels),demension))
@@ -70,6 +73,9 @@ model.add(layers.Dense(3,activation='softmax'))
 model.compile(optimizer='rmsprop',loss='categorical_crossentropy',metrics=['accuracy'])
 
 history = model.fit(X, Y, epochs=35, batch_size=128, validation_split=0.4)
+
+
+
 
 #model.save_weights('Dense_model.h5')
 
