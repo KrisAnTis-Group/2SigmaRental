@@ -4,72 +4,53 @@ from src import dataModifier as DM
 
 dataJS = DM.json_load("data/train.json/train.json")
 
-ModelTypesX = ["bathrooms", "bedrooms", "latitude", "longitude", "price", "created"]
+DigitTypes = ["bathrooms", "bedrooms", "latitude", "longitude", "price"]
+FullTimeTypes = ["created"]
 ModelTypesY = ["interest_level"]
 
-tupeConvert = {
-    'interest_level':{
-        'low': 0,
-        'medium': 1,
-        'high': 2
-    }
-}
+tupeConvert = {'interest_level': {'low': 0, 'medium': 1, 'high': 2}}
 
+DigitData = np.array(DM.get_categories(dataJS, DigitTypes))
+FullTimeData = DM.get_categories(dataJS, FullTimeTypes)
+Y = np.array(
+    DM.get_arr(DM.modifier_fiches_type(dataJS, tupeConvert), ModelTypesY))
 
+Data = DM.data_to_days(DM.fullData_to_data(FullTimeData))
+Time = DM.time_to_sec(DM.fullData_to_time(FullTimeData))
 
-
-
-X = DM.get_categories(dataJS,ModelTypesX)
-X = np.array(X)
-Y = DM.get_categories(DM.modifier_fiches_type(dataJS,tupeConvert),ModelTypesY)
-Y = np.array(Y) 
-
-
-FullData = X[:,-1:]
-X = X[:,:-1]
-
-Data = DM.data_to_days(DM.fullData_to_data(FullData))
-Time = DM.time_to_sec(DM.fullData_to_time(FullData))
-
-X = np.column_stack((X, Data, Time))
+X = np.column_stack((DigitData, Data, Time))
 
 X = np.asarray(X).astype('float32')
-Y = np.asarray(Y).astype('int') 
+Y = np.asarray(Y).astype('int')
 
 np.random.seed(2)
 
-indices = np.arange(X.shape[0])
-np.random.shuffle(indices)
+indices = DM.mixedIndex(X)
 X = X[indices]
 Y = Y[indices]
 
 #нормализация
-mean = X.mean(axis=0)
-X -= mean
-std = X.std(axis=0)
-X /= std
-
-def to_one_hot(labels, demension=3):
-    results = np.zeros((len(labels),demension))
-    for i, label in enumerate(labels):
-        results[i,label]=1
-    return results
-
-Y = to_one_hot(Y)
+X = DM.normalization(X)
+Y = DM.to_one_hot(Y)
 
 from keras import models
 from keras import layers
+from keras import regularizers
+from keras.optimizers import RMSprop
 
 model = models.Sequential()
-model.add(layers.Dense(32,activation='relu',input_shape=(X.shape[1],)))
-model.add(layers.Dense(32,activation='relu'))
+model.add(layers.Dense(32, activation='relu', input_shape=(X.shape[1], )))
+model.add(layers.Dropout(0.15))
+model.add(layers.Dense(32, activation='relu'))
 #model.add(layers.Dense(32,activation='relu'))
 #model.add(layers.Dense(16,activation='relu'))
-model.add(layers.Dense(3,activation='softmax'))
+model.add(layers.Dense(3, activation='softmax'))
 
-model.compile(optimizer='rmsprop',loss='categorical_crossentropy',metrics=['accuracy'])
+model.compile(optimizer=RMSprop(lr=5e-4),
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
 
-history = model.fit(X, Y, epochs=35, batch_size=128, validation_split=0.4)
+history = model.fit(X, Y, epochs=31, batch_size=90, validation_split=0.4)
 
 #model.save_weights('Dense_model.h5')
 
@@ -77,7 +58,7 @@ history = model.fit(X, Y, epochs=35, batch_size=128, validation_split=0.4)
 
 import matplotlib.pyplot as plt
 
-acc=history.history['accuracy']
+acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
@@ -97,4 +78,3 @@ plt.title('Training and validation loss')
 plt.legend()
 
 plt.show()
-
