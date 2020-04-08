@@ -1,4 +1,4 @@
-# 2SigmaRental
+# SigmaRental
 Материалы тестового задания: 
 https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/overview
 
@@ -33,8 +33,8 @@ https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/overview
 2) Чтобы выкачать на colab библиотеку, не забудьте выполнить команду в первой ячейке:
 
 ```
-import sys; sys.path.append('/content/2SigmaRental')
-!git clone https://github.com/KrisAnTis-Group/2SigmaRental.git && pip install -r 2SigmaRental/requirements.txt
+import sys; sys.path.append('/content/SigmaRental')
+!git clone https://github.com/KrisAnTis-Group/SigmaRental.git && pip install -r SigmaRental/requirements.txt
 ```
 
 3) Не забудьте настроить `device='cpu'` (модель работает на cpu - установлено по умолчанию на Google Colab), а также выбрать подходящий Runtime в Google Colab (CPU/TPU/GPU).
