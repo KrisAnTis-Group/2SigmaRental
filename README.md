@@ -37,6 +37,18 @@ import sys; sys.path.append('/content/SigmaRental')
 !git clone https://github.com/KrisAnTis-Group/SigmaRental.git && pip install -r SigmaRental/requirements.txt
 ```
 
+4) Позаботьтесь о входных данных `test.json`, которые требуются для обучения моделей. Файл можно загрузить в colab с помощью команд:
+
+```
+from google.colab import files
+uploaded = files.upload()
+```
+Не забудьте изменить путь до файла и его имя (при необходимости) в строке: 
+
+```
+# открываем файл для прогнозирования целей по данным фичам
+dataJS = DM.json_load("data/test.json/test.json")
+```
 3) Не забудьте настроить `device='cpu'` (модель работает на cpu - установлено по умолчанию на Google Colab), а также выбрать подходящий Runtime в Google Colab (CPU/TPU/GPU).
 
-4) Запустите ноутбук.
+5) Запустите ноутбук.
