@@ -6,14 +6,14 @@ dataJS = DM.json_load("data/train.json/train.json")
 
 DigitTypes = ["bathrooms", "bedrooms", "latitude", "longitude", "price"]
 FullTimeTypes = ["created"]
-ModelTypesY = ["interest_level"]
+AnswerTypes = ["interest_level"]
 
 tupeConvert = {'interest_level': {'low': 0, 'medium': 1, 'high': 2}}
 
 DigitData = np.array(DM.get_categories(dataJS, DigitTypes))
 FullTimeData = DM.get_categories(dataJS, FullTimeTypes)
 Y = np.array(
-    DM.get_arr(DM.modifier_fiches_type(dataJS, tupeConvert), ModelTypesY))
+    DM.get_arr(DM.modifier_fiches_type(dataJS, tupeConvert), AnswerTypes))
 
 Data = DM.data_to_MD(DM.fullData_to_data(FullTimeData))
 Time = DM.time_to_HMS(DM.fullData_to_time(FullTimeData))

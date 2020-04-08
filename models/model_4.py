@@ -75,7 +75,7 @@ history = model.fit(X_train,
                     batch_size=128,
                     validation_data=(X_val, Y_val))
 
-# model.save_weights('Dense_model.h5')
+# model.save_weights('weights/model4.h5')
 # графики изменения качества модели
 
 import matplotlib.pyplot as plt

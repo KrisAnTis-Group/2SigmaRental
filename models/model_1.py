@@ -4,14 +4,14 @@ from src import dataModifier as DM
 
 dataJS = DM.json_load("data/train.json/train.json")
 
-ModelTypesX = ["bathrooms", "bedrooms", "latitude", "longitude", "price"]
-ModelTypesY = ["interest_level"]
+DigitTypes = ["bathrooms", "bedrooms", "latitude", "longitude", "price"]
+AnswerTypes = ["interest_level"]
 
-interestLevel = {'interest_level': {'low': 0, 'medium': 1, 'high': 2}}
+tupeConvert = {'interest_level': {'low': 0, 'medium': 1, 'high': 2}}
 
-X = np.array(DM.get_categories(dataJS, ModelTypesX))
+X = np.array(DM.get_categories(dataJS, DigitTypes))
 Y = np.array(
-    DM.get_arr(DM.modifier_fiches_type(dataJS, interestLevel), ModelTypesY))
+    DM.get_arr(DM.modifier_fiches_type(dataJS, tupeConvert), AnswerTypes))
 
 X = np.asarray(X).astype('float32')
 Y = np.asarray(Y).astype('int')

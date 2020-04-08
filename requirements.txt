@@ -1,0 +1,6 @@
+numpy
+scipy
+matplotlib
+yaml
+ipython
+keras
